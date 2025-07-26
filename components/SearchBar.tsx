@@ -20,6 +20,10 @@ const SearchBar : React.FC<Props> = ({searchTerm,onSearchChange,onSearchSubmit})
             onClick={onSearchSubmit}
             className="bg-blue-600 text-white px-4 py-2 rounded-r-md hover:bg-blue-700"
             >Search</button>
+            <button
+            onClick={() => onSearchChange('')}
+            className="bg-blue-600 text-white m-2 px-4 py-2 rounded-r-md hover:bg-blue-700"
+            >clear</button>
         </div>
     )
 }

@@ -1,13 +1,14 @@
 'use client'
-import { useState , useCallback } from "react"
+import { useState , useCallback, useEffect } from "react"
 import SearchBar from "@/components/SearchBar"
 import RecipeCard from "@/components/RecipeCard"
 import { Recipe } from "@/types/recipe";
 import { debounce } from "lodash";
+import useLocalStorage from "@/hooks/useLocalStorage";
 
 
 export default function Home() {
-  const [searchTerm,setSearchTerm] = useState('');
+  const [searchTerm,setSearchTerm] = useLocalStorage<string>('last search','');
   const [recipes,setRecipes] = useState<Recipe[]>([]);
   const [loading,setLoading] = useState(false);
   const [error,setError] = useState('');
@@ -34,6 +35,16 @@ export default function Home() {
     },500)
     ,[])
 
+    useEffect(() => {
+      if(searchTerm.trim()){
+        fetchRecipes();
+      }
+    },[])
+    
+    const handleClear = () => {
+      setSearchTerm('');
+    }
+
   return (
      <main className="min-h-screen bg-gray-100 p-6">
       <h1 className="text-3xl font-bold text-center mb-6">🍽️ Recipe Finder</h1>
@@ -42,6 +53,10 @@ export default function Home() {
         onSearchChange={setSearchTerm}
         onSearchSubmit={fetchRecipes}
       />
+       <button
+            onClick={() => handleClear}
+            className="bg-blue-600 text-white m-2 px-4 py-2 rounded-r-md hover:bg-blue-700"
+            >clear searchTerms</button>
       {loading && <p className="text-center">Loading...</p>}
       {error && <p className="text-center text-red-500">{error}</p>}
       {!loading && !error && recipes.length === 0 && (
